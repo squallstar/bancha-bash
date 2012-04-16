@@ -24,7 +24,7 @@ Or, if you have **curl** instead of wget:
 
 # Usage
 
-1. Fresh Bancha install:
+Fresh Bancha install:
 
     bancha install
 
@@ -32,7 +32,7 @@ Or, if you have **curl** instead of wget:
 The script will ask you for a directory (leave blank to install in the current path).
 
 
-2. Update an existing installation to the latest available version:
+Update an existing installation to the latest available version:
 
     bancha update
 

@@ -24,14 +24,19 @@ Or, if you have **curl** instead of wget:
 
 # Usage
 
-Fresh Bancha install:
+1. Fresh Bancha install:
 
     bancha install
 
+The script will ask you for a directory (leave blank to install in the current path).
 
-Update an existing installation to the latest available version:
+
+2. Update an existing installation to the latest available version:
 
     bancha update
+
+The following folders will be updated: **core** and **themes/admin**.
+A backup copy of both directories will be created in their paths with a **._** prefix.
 
 
 Clear the website and administration cache (db, pages, settings, trees, content types)

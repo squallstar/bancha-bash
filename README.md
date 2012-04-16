@@ -1,3 +1,5 @@
+![Logo](http://static.squallstar.it/images/bancha-trasp.png)
+
 # Bancha Bash Utilities
 
 A simple bash script that performs many operations

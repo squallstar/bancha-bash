@@ -21,8 +21,58 @@ tarball="https://github.com/squallstar/bancha/tarball/master"
 #Tmp file
 tmpfile=bnc_tmp-installer.zip
 
+#Log file
+logfile="./bancha-bash.log"
+
+#Downloads the latest version from GitHub
+get_tarball() {
+	if [ -f /usr/bin/curl ];
+	then
+		curl --silent -L $tarball > $tmpfile
+	else
+		wget -q $tarball -O $tmpfile
+	fi
+}
+
+#Cache app paths
+get_apppaths() {
+
+	if [ -f index.php ];
+	then
+		conf=".bnc_conf.php"
+
+		cp index.php $conf
+		sed -i 's/require/#require_once/g' $conf
+
+		echo >> $conf
+
+		#1. Core path
+		echo "echo APPPATH;" >> $conf
+		corepath=$(/usr/bin/php $conf)
+		sed -i '$d' $conf
+
+		#2. Themes path
+		echo "echo THEMESPATH;" >> $conf
+		themespath=$(/usr/bin/php $conf)
+		sed -i '$d' $conf
+
+		#3. App path
+		echo "echo USERPATH;" >> $conf
+		userpath=$(/usr/bin/php $conf)
+
+		rm $conf
+	else
+		echo "-- Bancha has not been found in the current directory."
+		echo "   Please use this script on the public root of your Bancha installation"
+		echo "   (where the index.php file is located)"
+		exit 1;
+	fi
+}
+
 case $1 in
 	"install" )
+	touch $logfile
+
 	#Install procedure
 
 	if [ -f index.php ];
@@ -39,13 +89,7 @@ case $1 in
 	read installdir
 
 	echo -n "-- Downloading the latest version from GitHub... "
-
-	if [ -f /usr/bin/curl ];
-	then
-		curl --silent -L $tarball > $tmpfile
-	else
-		wget -q $tarball -O $tmpfile
-	fi
+	get_tarball
 	echo "done!"
 
 	echo -n "-- Extracting "
@@ -79,72 +123,61 @@ case $1 in
 	;;
 
 	"update" )
+	touch $logfile
 
-	if [ -d core ];
+	get_apppaths
+
+	echo "-- Update procedure started..."
+
+	echo -n "-- Downloading the latest version from GitHub... "
+	get_tarball
+	echo "done!"
+
+	echo -n "-- Extracting data... "
+	tar -xf $tmpfile
+	echo "done!"
+
+	if [ -d $corepath ];
 	then
-		echo "-- Update procedure started..."
+		oldcore="._old.core"
 
-		echo -n "-- Downloading the latest version from GitHub... "
-
-		if [ -f /usr/bin/curl ];
-        	then
-        		curl --silent -L $tarball > $tmpfile
-        	else
-        	        wget -q $tarball -O $tmpfile
-	        fi
-
-        	echo "done!"
-
-		echo -n "-- Extracting data... "
-		tar -xf $tmpfile
-		echo "done!"
-
-		if [ -d core ];
+		if [ -d $oldcore ];
 		then
-			oldcore="._old.core"
-
-			if [ -d $oldcore ];
-			then
-				rm $oldcore -rf
-			fi
-
-			mv core $oldcore
-			echo "-- Core folder moved to $oldcore"
-		fi
-		echo -n "-- Replacing core folder... "
-		mv ./squallstar-bancha-*/core ./core -f
-		echo "done!"
-
-		if [ -d themes ];
-		then
-			themesdir="themes/"
-			oldtheme="._old.admin"
-
-			if [ -d $themes$oldtheme ];
-			then
-				rm $themes$oldtheme -rf
-			fi
-
-			echo "-- Admin theme moved to themes/$oldtheme"
-			mv themes/admin $themes$oldtheme
-		else
-			mkdir themes
+			rm "$oldcore" -rf
 		fi
 
-		echo -n "-- Replacing admin theme... "
-                mv ./squallstar-bancha-*/themes/admin ./themes/admin
-                echo "done!"
-
-		echo "-- Update finished!"
-
-		rm $tmpfile -rf
-		rm ./squallstar-bancha-* -rf
-
-	else
-		echo "-- Bancha has not been found in the current directory."
-		echo "   Please use this script on the root of your Bancha installation"
-		echo "   (where the core directory is located)"
+		mv "$corepath" "$oldcore"
+		echo "-- Core folder moved to $oldcore"
 	fi
+	echo -n "-- Replacing core folder... "
+	mv ./squallstar-bancha-*/core "$corepath" -f
+	echo "done!"
+
+	if [ -d $themespath ];
+	then
+		oldtheme="._old.theme-admin"
+
+		if [ -d "$themespath$oldtheme" ];
+		then
+			rm "$themespath$oldtheme" -rf
+		fi
+
+		echo "-- Admin theme moved to $themespath$oldtheme"
+		mv "$themespath/admin" "$themespath$oldtheme"
+	else
+		mkdir $themespath
+	fi
+
+	echo -n "-- Replacing admin theme... "
+			admintheme="admin"
+            mv ./squallstar-bancha-*/themes/admin "$themespath$admintheme"
+            echo "done!"
+
+	echo "-- Update finished!"
+	echo "[" `date` "] Update finished." >> $logfile
+
+	rm "$tmpfile" -rf
+	rm ./squallstar-bancha-* -rf
 
 	#Update end
 	;;
@@ -162,13 +195,32 @@ case $1 in
 
 	case $2 in
 		"clear" )
+		touch $logfile
 		echo -n "-- Clearing cache..."
 
-		rm ./application/cache/_bancha/*.tmp
-		rm ./application/cache/_pages/*
-		rm ./application/cache/_db/* -rf
+		get_apppaths
+
+		cachetmp_files="cache/_bancha/"
+		cachetmp_pages="cache/_pages/"
+		cachetmp_db="cache/_db/"
+
+		#1. Files
+		rm "$userpath$cachetmp_files" -rf
+		mkdir "$userpath$cachetmp_files"
+
+		#2. Pages
+		rm "$userpath$cachetmp_pages" -rf
+		mkdir "$userpath$cachetmp_pages"
+
+		#3. DB queries
+		rm "$userpath$cachetmp_db" -rf
+		mkdir "$userpath$cachetmp_db"
+		
 
 		echo "done!"
+
+		echo "[" `date` "] Cache cleared." >> $logfile
+
 		;;
 	esac
 
@@ -176,6 +228,8 @@ case $1 in
 
 	* )
 	#Default
+	echo "Usage: bancha [OPERATION]"
+	echo
 	echo "You did not select an operation. Available options:"
 	echo "- install  (e.g. bancha install)"
 	echo "- update   (e.g. bancha update)"

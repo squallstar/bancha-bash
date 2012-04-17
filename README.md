@@ -6,7 +6,7 @@ A simple bash script that performs many operations
 
 - Requires: **UNIX shell**, **wget** or **curl**, **tar**
 - Tested on: **Ubuntu 11+**
-
+- Does **not** work on **Mac OSX** terminal
 
 # How to install
 

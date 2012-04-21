@@ -17,7 +17,7 @@ From an unix shell (we used Ubuntu), type the following commands:
     sudo mv _bnc.sh /usr/bin/bancha
 
 
-Or, if you have **curl** instead of wget:
+Or, if you have **wget** instead of curl:
 
     wget -q http://getbancha.com/utilities.txt -O _bnc.sh
     chmod +x _bnc.sh

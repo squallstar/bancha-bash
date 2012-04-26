@@ -4,9 +4,9 @@
 
 A simple bash script that performs many useful operations.
 
-- Requires: **UNIX shell**, **wget** or **curl**, **tar**.
+- Requires: **wget** or **curl**, **php**, **tar**.
 - Tested on: **Ubuntu 10+**.
-- Does **NOT** work on **Mac OSX** crappy FreeBSD shell.
+- Does **NOT** work on **Mac OSX** crappy FreeBSD shells.
 
 ## 1. How to install
 

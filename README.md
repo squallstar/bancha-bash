@@ -12,13 +12,13 @@ A simple bash script that performs many useful operations.
 
 From an unix shell (we used Ubuntu), type the following commands:
 
-    wget -q http://getbancha.com/utilities.txt -O _bnc.sh
+    wget -q https://raw.github.com/squallstar/bancha-bash/master/bancha.sh -O _bnc.sh
     chmod +x _bnc.sh
     sudo mv _bnc.sh /usr/bin/bancha
 
 Or, if you have **curl** instead of wget:
 
-    curl -s http://getbancha.com/utilities.txt > _bnc.sh
+    curl -s https://raw.github.com/squallstar/bancha-bash/master/bancha.sh > _bnc.sh
     chmod +x _bnc.sh
     sudo mv _bnc.sh /usr/bin/bancha
 

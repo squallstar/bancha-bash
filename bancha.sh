@@ -191,10 +191,10 @@ case $1 in
 	;;
 
 
-	"cache" )
+	"clear" )
 
 	case $2 in
-		"clear" )
+		"cache" )
 		touch $logfile
 		echo -n "-- Clearing cache..."
 
@@ -215,13 +215,38 @@ case $1 in
 		#3. DB queries
 		rm "$userpath$cachetmp_db" -rf
 		mkdir "$userpath$cachetmp_db"
-		
 
 		echo "done!"
 
 		echo "[" `date` "] Cache cleared." >> $logfile
 
 		;;
+
+
+		"presets" )
+
+		touch $logfile
+        echo -n "-- Clearing cached presets..."
+
+		cached_presets="./attach/cache"
+		rm "$cached_presets" -rf
+		mkdir "$cached_presets"
+		touch "$cached_presets/index.html"
+
+		echo "done!"
+
+		echo "[" `date` "] Presets cache cleared." >> $logfile
+
+		;;
+
+		* )
+		#Cache default
+		echo "You need to select a clear operation."
+		echo
+		echo "- Clear admin/website cache:      'bancha clear cache'"
+		echo "- Clear image/presets cache:      'bancha clear presets'"
+		;;
+
 	esac
 
 	;;
@@ -233,7 +258,7 @@ case $1 in
 	echo "You did not select an operation. Available options:"
 	echo "- install  (e.g. bancha install)"
 	echo "- update   (e.g. bancha update)"
-	echo "- cache    (e.g. bancha cache clear)"
+	echo "- cache    (e.g. bancha clear cache|presets)"
 
 esac
 echo

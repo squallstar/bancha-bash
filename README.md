@@ -5,8 +5,8 @@
 A simple bash script that performs many useful operations.
 
 - Requires: **wget** or **curl**, **php**, **tar**.
-- Tested on: **Ubuntu 10+**.
-- Does **NOT** work on **OSX** terminal, but you're welcome to make a patch for it!
+- Tested on: **Ubuntu 10+** and **OSX Maverick**.
+- The update procedure does not work on **OSX**.
 
 ## 1. How to install
 

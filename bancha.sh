@@ -105,14 +105,14 @@ case $1 in
 		tar -xf $tmpfile
 		if [ -d $installdir ];
 		then
-			mv ./squallstar-bancha-*/* $installdir/* -f
+			mv -f ./squallstar-bancha-*/* $installdir/*
 		else
-			mv ./squallstar-bancha-* $installdir -f
+			mv -f ./squallstar-bancha-* $installdir
 		fi
 
 	fi
 	rm $tmpfile
-	rm ./squallstar-bancha-* -rf
+	rm -rf ./squallstar-bancha-*
 	echo " done!"
 
 
